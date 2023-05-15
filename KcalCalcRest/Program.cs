@@ -29,7 +29,7 @@ namespace KcalCalcRest
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = "issuer",
                         ValidAudience = "audience",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sevretKey"))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretKey"))
                     };
                 });
 
