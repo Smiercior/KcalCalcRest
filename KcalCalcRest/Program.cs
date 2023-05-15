@@ -4,51 +4,46 @@ using System.Text;
 
 namespace KcalCalcRest;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+public class Program {
+	public static void Main(string[] args) {
+		var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-        builder.Services.AddControllers();
+		// Add services to the container.
+		builder.Services.AddControllers();
 
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen();
 
-        // Add JWT token authentication
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = "issuer",
-                    ValidAudience = "audience",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretKey"))
-                };
-            });
+		// Add JWT token authentication
+		builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+			.AddJwtBearer(options => {
+				options.TokenValidationParameters = new TokenValidationParameters {
+					ValidateIssuer = true,
+					ValidateAudience = true,
+					ValidateLifetime = true,
+					ValidateIssuerSigningKey = true,
+					ValidIssuer = "issuer",
+					ValidAudience = "audience",
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretKey"))
+				};
+			});
 
-        var app = builder.Build();
+		var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+		// Configure the HTTP request pipeline.
+		if (app.Environment.IsDevelopment()) {
+			app.UseSwagger();
+			app.UseSwaggerUI();
+		}
 
-        app.UseHttpsRedirection();
+		app.UseHttpsRedirection();
 
-        app.UseAuthorization();
-        app.UseAuthentication();
+		app.UseAuthorization();
+		app.UseAuthentication();
 
-        app.MapControllers();
+		app.MapControllers();
 
-        app.Run();
-    }
+		app.Run();
+	}
 }
