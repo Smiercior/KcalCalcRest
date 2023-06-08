@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using KcalCalcRest.Data;
 
 namespace KcalCalcRest.Controllers;
 
@@ -11,9 +12,11 @@ public class WeatherForecastController : ControllerBase {
 	};
 
 	private readonly ILogger<WeatherForecastController> _logger;
+	private readonly ApplicationDbContext _dbContext;
 
-	public WeatherForecastController(ILogger<WeatherForecastController> logger) {
+	public WeatherForecastController(ILogger<WeatherForecastController> logger, ApplicationDbContext dbContext) {
 		_logger = logger;
+		_dbContext = dbContext;
 	}
 
 	[HttpGet(Name = "GetWeatherForecast")]
