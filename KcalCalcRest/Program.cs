@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using KcalCalcRest.Data;
-using Npgsql;
 
 namespace KcalCalcRest;
 

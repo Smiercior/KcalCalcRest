@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KcalCalcRest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230608163553_InitialMigrations")]
-    partial class InitialMigrations
+    [Migration("20230610095639_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,36 +25,7 @@ namespace KcalCalcRest.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("KcalCalcRest.Models.ProductEntries", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("EntryDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProductEntries");
-                });
-
-            modelBuilder.Entity("KcalCalcRest.Models.Products", b =>
+            modelBuilder.Entity("KcalCalcRest.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,7 +63,36 @@ namespace KcalCalcRest.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("KcalCalcRest.Models.Users", b =>
+            modelBuilder.Entity("KcalCalcRest.Models.ProductEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("EntryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProductEntries");
+                });
+
+            modelBuilder.Entity("KcalCalcRest.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,15 +122,15 @@ namespace KcalCalcRest.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("KcalCalcRest.Models.ProductEntries", b =>
+            modelBuilder.Entity("KcalCalcRest.Models.ProductEntry", b =>
                 {
-                    b.HasOne("KcalCalcRest.Models.Products", "Product")
+                    b.HasOne("KcalCalcRest.Models.Product", "Product")
                         .WithMany("ProductEntries")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KcalCalcRest.Models.Users", "User")
+                    b.HasOne("KcalCalcRest.Models.User", "User")
                         .WithMany("ProductEntries")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -141,12 +141,12 @@ namespace KcalCalcRest.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KcalCalcRest.Models.Products", b =>
+            modelBuilder.Entity("KcalCalcRest.Models.Product", b =>
                 {
                     b.Navigation("ProductEntries");
                 });
 
-            modelBuilder.Entity("KcalCalcRest.Models.Users", b =>
+            modelBuilder.Entity("KcalCalcRest.Models.User", b =>
                 {
                     b.Navigation("ProductEntries");
                 });

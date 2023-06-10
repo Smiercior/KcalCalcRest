@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KcalCalcRest.Models {
-	public class Users {
+	public class User {
 		[Key]
 		[Required]
 		public int Id { get; set; }
@@ -21,7 +21,7 @@ namespace KcalCalcRest.Models {
 		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
 		public DateTime JoinedAt { get; set; }
 
-		public virtual ICollection<ProductEntries> ProductEntries { get; set; }
+		public virtual ICollection<ProductEntry> ProductEntries { get; set; }
 	}
 }
 
