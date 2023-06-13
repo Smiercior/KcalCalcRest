@@ -2,10 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace KcalCalcRest.Models;
+
 public class User : IdentityUser {
-	[Required]
-	[EmailAddress]
-	public string Email { get; set; }
 
 	[StringLength(40, MinimumLength = 2, ErrorMessage = "FirstName should be longer than 2 characters and shorter than 40 characters")]
 	public string FirstName { get; set; }
