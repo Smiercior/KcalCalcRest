@@ -3,6 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using KcalCalcRest.Data;
+using System.Runtime.CompilerServices;
+using KcalCalcRest.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace KcalCalcRest;
 
@@ -35,6 +38,17 @@ public class Program {
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretKey"))
 				};
 			});
+
+		// Use Identity
+		builder.Services.AddIdentity<User, IdentityRole>(o => {
+			o.Password.RequireDigit = true;
+			o.Password.RequireLowercase = true;
+			o.Password.RequireUppercase = true;
+			o.Password.RequireNonAlphanumeric = true;
+			o.User.RequireUniqueEmail = true;
+		})
+			.AddEntityFrameworkStores<ApplicationDbContext>()
+			.AddDefaultTokenProviders();
 
 		var app = builder.Build();
 

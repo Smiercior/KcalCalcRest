@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using KcalCalcRest.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace KcalCalcRest.Data;
-public class ApplicationDbContext : DbContext {
+public class ApplicationDbContext : IdentityDbContext<User> {
 	public DbSet<User> Users { get; set; }
 	public DbSet<Product> Products { get; set; }
 	public DbSet<ProductEntry> ProductEntries { get; set; }
