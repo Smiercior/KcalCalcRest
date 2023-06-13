@@ -15,14 +15,14 @@ public class ProductsEntriesController : BaseApiController {
 	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpPost("product-entries")]
 	public async Task<IActionResult> CreateProductEntry([FromBody] ProductEntryCreationDTO productEntryData) {
-		var product = _mapper.Map<ProductEntry>(productEntryData);
-		await _repository.Products.CreateProduct(product);
+		var productEntry = _mapper.Map<ProductEntry>(productEntryData);
+		await _repository.ProductEntries.CreateProduct(productEntry);
 		await _repository.SaveAsync();
-		var productDataToReturn = _mapper.Map<ProductDTO>(product);
-		return CreatedAtRoute("ProductById",
+		var productEntryDataToReturn = _mapper.Map<ProductEntryDTO>(productEntry);
+		return CreatedAtRoute("ProductEntryById",
 			new {
-				productId = productDataToReturn.Id
+				productEntryId = productEntryDataToReturn.Id
 			},
-			productDataToReturn);
+			productEntryDataToReturn);
 	}
 }

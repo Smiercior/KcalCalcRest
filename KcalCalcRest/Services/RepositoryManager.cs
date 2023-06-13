@@ -15,8 +15,8 @@ public class RepositoryManager : IRepositoryManager {
 	
 	private IUserAuthenticationRepository? _userAuthenticationRepository;
 	private IProductRepository _productRepository;
+	private IProductEntryRepository _productEntryRepository;
 	
-
 	public RepositoryManager(ApplicationDbContext appDbContext, UserManager<User> userManager,  IConfiguration configuration, IMapper mapper) {
 		_appDbContext = appDbContext;
 		_userManager = userManager;
@@ -39,6 +39,15 @@ public class RepositoryManager : IRepositoryManager {
 				_productRepository = new ProductRepository(_appDbContext);
 			}
 			return _productRepository;
+		}
+	}
+	
+	public IProductEntryRepository ProductEntries {
+		get {
+			if (_productEntryRepository is null){
+				_productEntryRepository = new ProductEntryRepository(_appDbContext);
+			}
+			return _productEntryRepository;
 		}
 	}
 	

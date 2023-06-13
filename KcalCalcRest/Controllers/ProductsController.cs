@@ -30,13 +30,13 @@ public class ProductsController : BaseApiController {
 	[HttpGet("{productId}", Name = "ProductById")]
 	public async Task<IActionResult> GetProduct(int productId)
 	{
-		var teacher = await _repository.Products.GetProduct(productId, trackChanges: false);
-		if (teacher is null) {
+		var product = await _repository.Products.GetProduct(productId, trackChanges: false);
+		if (product is null) {
 			// TODO: _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
 			return NotFound();
 		}
 		else {
-			var productDTO = _mapper.Map<ProductDTO>(teacher);
+			var productDTO = _mapper.Map<ProductDTO>(product);
 			return Ok(productDTO);
 		}
 	}
@@ -46,8 +46,8 @@ public class ProductsController : BaseApiController {
 	public async Task<IActionResult> GetProducts() {
 		try {
 			var products = await _repository.Products.GetAllProducts(trackChanges: false);
-			var teachersDto = _mapper.Map<IEnumerable<ProductDTO>>(products);
-			return Ok(teachersDto);
+			var productsDTO = _mapper.Map<IEnumerable<ProductDTO>>(products);
+			return Ok(productsDTO);
 		}
 		catch (Exception e) {
 			// TODO: _logger.LogError($"Something went wrong in the {nameof(GetProducts)} action {e}");

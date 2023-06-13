@@ -19,12 +19,7 @@ public class ProfileController : BaseApiController {
 	
 	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet]
-	public async Task<IActionResult> GetProfile() {
-		Console.WriteLine("User Id: " + 
-		                  _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
-		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
-		Console.WriteLine("Username: " + username);
-		
+	public async Task<IActionResult> GetProfile() {var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
 		if (username is null) {
 			return BadRequest("User not found");
 		}
