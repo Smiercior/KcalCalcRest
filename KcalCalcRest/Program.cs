@@ -8,15 +8,20 @@ using KcalCalcRest.Interfaces;
 using KcalCalcRest.Mappings;
 using KcalCalcRest.Models;
 using KcalCalcRest.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgresSQL");
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt => {
+	var policy = new AuthorizationPolicyBuilder("Bearer").RequireAuthenticatedUser().Build();
+	opt.Filters.Add(new AuthorizeFilter(policy));
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

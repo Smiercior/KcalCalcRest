@@ -13,8 +13,7 @@ public class ProductsController : BaseApiController {
 	public ProductsController(IRepositoryManager repository, IMapper mapper) : base(repository, mapper) { }
 	
 	[HttpPost]
-	[Authorize]
-	public async Task<IActionResult> CreateProduct([FromBody] ProductDTO productData) {
+	public async Task<IActionResult> CreateProduct([FromBody] ProductCreationAndUpdateDTO productData) {
 		var product = _mapper.Map<Product>(productData);
 		await _repository.Products.CreateProduct(product);
 		await _repository.SaveAsync();
@@ -28,7 +27,6 @@ public class ProductsController : BaseApiController {
 
 
 	[HttpGet("{productId}", Name = "ProductById")]
-	[Authorize]
 	public async Task<IActionResult> GetProduct(int productId)
 	{
 		var teacher = await _repository.Products.GetProduct(productId, trackChanges: false);
@@ -43,7 +41,6 @@ public class ProductsController : BaseApiController {
 	}
 	
 	[HttpGet]
-	// [Authorize] // TODO: add test for this
 	public async Task<IActionResult> GetProducts() {
 		try {
 			var products = await _repository.Products.GetAllProducts(trackChanges: false);
