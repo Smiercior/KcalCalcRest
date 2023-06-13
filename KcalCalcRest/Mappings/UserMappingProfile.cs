@@ -6,6 +6,7 @@ namespace KcalCalcRest.Mappings;
 
 public class UserMappingProfile : Profile {
 	public UserMappingProfile() {
-		CreateMap<UserRegistrationDTO, User>();
+		CreateMap<UserRegistrationDTO, User>()
+			.ForMember(u => u.UserName, opt => opt.MapFrom(ur => ur.Email));
 	}
 }
