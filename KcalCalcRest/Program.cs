@@ -17,6 +17,20 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgresSQL");
 
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(MyAllowSpecificOrigins,
+		policy =>
+		{
+			policy.WithOrigins("http://localhost:3000",
+					"https://localhost:7060")
+				.AllowAnyHeader()
+				.AllowAnyMethod();
+		});
+});
+
+
 // Add services to the container.
 builder.Services.AddControllers();
 //builder.Services.AddControllers(opt => {  // TODO: remove this
@@ -109,6 +123,8 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 app.UseAuthentication();

@@ -38,4 +38,6 @@ public class HistoryController : BaseApiController {
 		});
 		return Ok(toReturn);
 	}
+	
+	// TODO: product summmary
 }
