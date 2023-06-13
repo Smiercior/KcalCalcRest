@@ -19,4 +19,8 @@ public class ProductEntryRepository : RepositoryBase<ProductEntry>, IProductEntr
 	public async Task<ProductEntry?> GetProductEntry(int productEntryId) {
 		return await FindByConditionAsync(e => e.Id == productEntryId, false).Result.SingleOrDefaultAsync();
 	}
+
+	public async Task DeleteProductEntry(ProductEntry productEntry) {
+		await RemoveAsync(productEntry);
+	}
 }

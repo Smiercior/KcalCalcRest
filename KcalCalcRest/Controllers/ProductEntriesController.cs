@@ -40,16 +40,29 @@ public class ProductsEntriesController : BaseApiController {
 			},
 			productEntryDataToReturn);
 	}
-	
+
 	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet("product-entries/{productEntryId:int}", Name = "ProductEntryById")]
-	public async Task<IActionResult> GetProductEntry(int productEntryId)
-	{
+	public async Task<IActionResult> GetProductEntry(int productEntryId) {
+		var productEntry = await _repository.ProductEntries.GetProductEntry(productEntryId);
+		if (productEntry is null) {
+			return NotFound();
+		}
+
+		var productEntryDTO = _mapper.Map<ProductEntryDTO>(productEntry);
+		return Ok(productEntryDTO);
+	}
+	
+	[Authorize(AuthenticationSchemes = "Bearer")]
+	[HttpDelete("product-entries/{productEntryId:int}")]
+	public async Task<IActionResult> DeleteProductEntry(int productEntryId) {
 		var productEntry = await _repository.ProductEntries.GetProductEntry(productEntryId);
 		if (productEntry is null) {
 			return NotFound();
 		}
 		
-		var productEntryDTO = _mapper.Map<ProductEntryDTO>(productEntry);
-		return Ok(productEntryDTO);
+		await _repository.ProductEntries.DeleteProductEntry(productEntry);
+		await _repository.SaveAsync();
+		return NoContent();
+	}
 }
