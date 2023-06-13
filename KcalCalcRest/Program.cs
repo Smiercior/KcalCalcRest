@@ -1,13 +1,15 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using KcalCalcRest.Data;
 using KcalCalcRest.Interfaces;
-using System.Runtime.CompilerServices;
+using KcalCalcRest.Mappings;
 using KcalCalcRest.Models;
 using KcalCalcRest.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest;
 
@@ -52,6 +54,12 @@ public class Program {
 			.AddEntityFrameworkStores<ApplicationDbContext>()
 			.AddDefaultTokenProviders();
 		
+		// Add services.
+		builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+		var mapperConfig = new MapperConfiguration(map => {
+			map.AddProfile<UserMappingProfile>();
+		});
+		builder.Services.AddSingleton(mapperConfig.CreateMapper()); 
 		builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 
 		var app = builder.Build();
