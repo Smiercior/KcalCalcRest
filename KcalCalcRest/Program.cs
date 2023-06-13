@@ -3,8 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using KcalCalcRest.Data;
+using KcalCalcRest.Interfaces;
 using System.Runtime.CompilerServices;
 using KcalCalcRest.Models;
+using KcalCalcRest.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace KcalCalcRest;
@@ -49,6 +51,8 @@ public class Program {
 		})
 			.AddEntityFrameworkStores<ApplicationDbContext>()
 			.AddDefaultTokenProviders();
+		
+		builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 
 		var app = builder.Build();
 
