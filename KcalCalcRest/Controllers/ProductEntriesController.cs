@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers;
 
-[Route("api/")]
+[Route("api/products-entries/")]
 [ApiController]
 public class ProductsEntriesController : BaseApiController {
 	private IHttpContextAccessor _contextAccessor;
@@ -18,7 +18,7 @@ public class ProductsEntriesController : BaseApiController {
 	}
 
 	[Authorize(AuthenticationSchemes = "Bearer")]
-	[HttpPost("product-entries")]
+	[HttpPost]
 	public async Task<IActionResult> CreateProductEntry([FromBody] ProductEntryCreationDTO productEntryData) {
 		var productEntry = _mapper.Map<ProductEntry>(productEntryData);
 		
@@ -42,7 +42,7 @@ public class ProductsEntriesController : BaseApiController {
 	}
 
 	[Authorize(AuthenticationSchemes = "Bearer")]
-	[HttpGet("product-entries/{productEntryId:int}", Name = "ProductEntryById")]
+	[HttpGet("{productEntryId:int}", Name = "ProductEntryById")]
 	public async Task<IActionResult> GetProductEntry(int productEntryId) {
 		var productEntry = await _repository.ProductEntries.GetProductEntry(productEntryId);
 		if (productEntry is null) {
@@ -54,7 +54,7 @@ public class ProductsEntriesController : BaseApiController {
 	}
 	
 	[Authorize(AuthenticationSchemes = "Bearer")]
-	[HttpDelete("product-entries/{productEntryId:int}")]
+	[HttpDelete("{productEntryId:int}")]
 	public async Task<IActionResult> DeleteProductEntry(int productEntryId) {
 		var productEntry = await _repository.ProductEntries.GetProductEntry(productEntryId);
 		if (productEntry is null) {
@@ -64,5 +64,22 @@ public class ProductsEntriesController : BaseApiController {
 		await _repository.ProductEntries.DeleteProductEntry(productEntry);
 		await _repository.SaveAsync();
 		return NoContent();
+	}
+
+	[Authorize(AuthenticationSchemes = "Bearer")]
+	[HttpGet("today")]
+	public async Task<IActionResult> GetUserEntriesFromToday() {
+		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
+		if (username is null) {
+			return BadRequest("Couldn't get username from context.");
+		}
+		var user = await _repository.UserAuthentication.GetUserAsync(username);
+		if (user is null) {
+			return BadRequest("User not found.");
+		}
+		
+		var productEntries = await _repository.ProductEntries.GetAllUserEntriesToday(user.Id);
+		var productEntriesDTO = _mapper.Map<IEnumerable<ProductEntryDTO>>(productEntries);
+		return Ok(productEntriesDTO);
 	}
 }
