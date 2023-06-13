@@ -26,6 +26,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseNpgsql(connectionString));
 
 // Add JWT token authentication
+var jwtConfig = builder.Configuration.GetSection("JwtConfig");
+var secretKey = jwtConfig["secret"];
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	.AddJwtBearer(options => {
 		options.TokenValidationParameters = new TokenValidationParameters {
@@ -35,7 +37,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateIssuerSigningKey = true,
 			ValidIssuer = "issuer",
 			ValidAudience = "audience",
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretKey"))
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
 		};
 	});
 
