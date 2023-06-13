@@ -18,10 +18,11 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgresSQL");
 
 // Add services to the container.
-builder.Services.AddControllers(opt => {
-	var policy = new AuthorizationPolicyBuilder("Bearer").RequireAuthenticatedUser().Build();
-	opt.Filters.Add(new AuthorizeFilter(policy));
-});
+builder.Services.AddControllers();
+//builder.Services.AddControllers(opt => {  // TODO: remove this
+//	var policy = new AuthorizationPolicyBuilder("Bearer").RequireAuthenticatedUser().Build();
+//	opt.Filters.Add(new AuthorizeFilter(policy));
+//});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -94,6 +95,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressMode
 var mapperConfig = new MapperConfiguration(map => {
 	map.AddProfile<UserMappingProfile>();
 	map.AddProfile<ProductMappingProfile>();
+	map.AddProfile<ProductEntryMappingProfile>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper()); 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();

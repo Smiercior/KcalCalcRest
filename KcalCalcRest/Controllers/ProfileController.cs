@@ -2,6 +2,7 @@
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers; 
@@ -16,6 +17,7 @@ public class ProfileController : BaseApiController {
 		_contextAccessor = contextAccessor;
 	}
 	
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet]
 	public async Task<IActionResult> GetProfile() {
 		Console.WriteLine("User Id: " + 

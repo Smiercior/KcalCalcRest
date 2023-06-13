@@ -23,8 +23,6 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 	}
 	
 	public async Task<IdentityResult> RegisterUserAsync(UserRegistrationDTO userRegistration) {
-		var user = _mapper.Map<User>(userRegistration);
-		
 		// Check if userRegistration.Password == userRegistration.Password2.
 		if (userRegistration.Password != userRegistration.Password2) {
 			return IdentityResult.Failed(new IdentityError {
@@ -32,11 +30,13 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 				Description = "Passwords do not match"
 			});
 		}
+		
+		var user = _mapper.Map<User>(userRegistration);
+		user.JoinedAt = DateTime.UtcNow;
 
 		var result = await _userManager.CreateAsync(user, userRegistration.Password);
 		return result;
 	}
-	
 
 	public async Task<bool> ValidateUserAsync(UserLoginDTO userLogin) {
 		_user = await _userManager.FindByEmailAsync(userLogin.Email);

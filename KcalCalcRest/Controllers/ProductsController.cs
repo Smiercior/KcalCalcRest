@@ -2,6 +2,7 @@
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest.Controllers; 
@@ -11,6 +12,7 @@ namespace KcalCalcRest.Controllers;
 public class ProductsController : BaseApiController {
 	public ProductsController(IRepositoryManager repository, IMapper mapper) : base(repository, mapper) { }
 	
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpPost]
 	public async Task<IActionResult> CreateProduct([FromBody] ProductCreationAndUpdateDTO productData) {
 		var product = _mapper.Map<Product>(productData);
@@ -24,6 +26,7 @@ public class ProductsController : BaseApiController {
 			productDataToReturn);
 	}
 
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet("{productId}", Name = "ProductById")]
 	public async Task<IActionResult> GetProduct(int productId)
 	{
@@ -38,6 +41,7 @@ public class ProductsController : BaseApiController {
 		}
 	}
 	
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet]
 	public async Task<IActionResult> GetProducts() {
 		try {
