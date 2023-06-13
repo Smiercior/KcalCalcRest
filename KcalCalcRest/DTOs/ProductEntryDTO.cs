@@ -12,4 +12,6 @@ public class ProductEntryDTO {
 public class ProductEntryCreationDTO {
 	[Required]
 	public float? Amount { get; set; }
+	[Required]
+	public int? ProductId { get; set; }
 }

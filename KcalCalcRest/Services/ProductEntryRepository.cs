@@ -13,6 +13,7 @@ public class ProductEntryRepository : RepositoryBase<ProductEntry>, IProductEntr
 
 	public async Task CreateProductEntry(ProductEntry productEntry, string userId) {
 		productEntry.UserId = userId;
+		productEntry.EntryDate = DateTime.UtcNow;
 		await CreateAsync(productEntry);
 	}
 
