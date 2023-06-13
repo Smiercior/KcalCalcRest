@@ -7,28 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest.Controllers; 
 
-[Route("api/products")]
+[Route("api/products/")]
 [ApiController]
 public class ProductsController : BaseApiController {
 	public ProductsController(IRepositoryManager repository, IMapper mapper) : base(repository, mapper) { }
 	
 	[HttpPost]
 	[Authorize]
-	public async Task<IActionResult> CreateTeacher([FromBody] ProductDTO teacher) {
-		var product = _mapper.Map<Product>(teacher);
+	public async Task<IActionResult> CreateProduct([FromBody] ProductDTO productData) {
+		var product = _mapper.Map<Product>(productData);
 		await _repository.Products.CreateProduct(product);
 		await _repository.SaveAsync();
-		var productDTO = _mapper.Map<ProductDTO>(product);
-		return CreatedAtRoute("TeacherById",
+		var productDataToReturn = _mapper.Map<ProductDTO>(product);
+		return CreatedAtRoute("ProductById",
 			new {
-				productId = productDTO.Id
+				productId = productDataToReturn.Id
 			},
-			productDTO);
+			productDataToReturn);
 	}
 
 
 	[HttpGet("{productId}", Name = "ProductById")]
-	public async Task<IActionResult> GetTeacher(int productId)
+	[Authorize]
+	public async Task<IActionResult> GetProduct(int productId)
 	{
 		var teacher = await _repository.Products.GetProduct(productId, trackChanges: false);
 		if (teacher is null) {
