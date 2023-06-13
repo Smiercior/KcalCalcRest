@@ -8,6 +8,5 @@ public interface IUserAuthenticationRepository {
 	Task<IdentityResult> RegisterUserAsync(UserRegistrationDTO userRegistration);
 	Task<bool> ValidateUserAsync(UserLoginDTO userLogin);
 	Task<string> CreateTokenAsync();
-	Task<User> GetUserAsync(string email);
-	Task<User> GetCurrentUserAsync();
+	Task<User?> GetUserAsync(string email);
 }
