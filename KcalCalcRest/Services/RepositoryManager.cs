@@ -9,10 +9,13 @@ namespace KcalCalcRest.Services;
 public class RepositoryManager : IRepositoryManager {
 	private ApplicationDbContext _appDbContext;
 
-	private IUserAuthenticationRepository? _userAuthenticationRepository;
 	private UserManager<User> _userManager;
 	private IConfiguration _configuration;
 	private IMapper _mapper;
+	
+	private IUserAuthenticationRepository? _userAuthenticationRepository;
+	private IProductRepository _productRepository;
+	
 
 	public RepositoryManager(ApplicationDbContext appDbContext, UserManager<User> userManager,  IConfiguration configuration, IMapper mapper) {
 		_appDbContext = appDbContext;
@@ -29,5 +32,15 @@ public class RepositoryManager : IRepositoryManager {
 			return _userAuthenticationRepository;
 		}
 	}
+	
+	public IProductRepository Products {
+		get {
+			if (_productRepository is null){
+				_productRepository = new ProductRepository(_appDbContext);
+			}
+			return _productRepository;
+		}
+	}
+	
 	public Task SaveAsync() => _appDbContext.SaveChangesAsync();
 }
