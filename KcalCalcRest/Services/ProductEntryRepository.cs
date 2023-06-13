@@ -24,4 +24,9 @@ public class ProductEntryRepository : RepositoryBase<ProductEntry>, IProductEntr
 	public async Task DeleteProductEntry(ProductEntry productEntry) {
 		await RemoveAsync(productEntry);
 	}
+
+	public async Task<List<IGrouping<DateTime, ProductEntry>>> GetEntriesGroupedByDate(string userId) {
+		return await FindByConditionAsync(e => e.UserId == userId, false).Result.GroupBy(e => e.EntryDate.Date)
+			.ToListAsync();
+	}
 }

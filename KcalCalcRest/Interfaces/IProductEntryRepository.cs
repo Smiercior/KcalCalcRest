@@ -7,4 +7,5 @@ public interface IProductEntryRepository {
 	Task CreateProductEntry(ProductEntry productEntry, string userId);
 	Task<ProductEntry?> GetProductEntry(int productEntryId);
 	Task DeleteProductEntry(ProductEntry productEntry);
+	Task<List<IGrouping<DateTime, ProductEntry>>> GetEntriesGroupedByDate(string userId);
 }
