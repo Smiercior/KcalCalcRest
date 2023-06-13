@@ -35,10 +35,9 @@ public class ProductsController : BaseApiController {
 			// TODO: _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
 			return NotFound();
 		}
-		else {
-			var productDTO = _mapper.Map<ProductDTO>(product);
-			return Ok(productDTO);
-		}
+
+		var productDTO = _mapper.Map<ProductDTO>(product);
+		return Ok(productDTO);
 	}
 	
 	[Authorize(AuthenticationSchemes = "Bearer")]
