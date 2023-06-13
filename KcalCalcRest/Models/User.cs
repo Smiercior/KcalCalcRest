@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace KcalCalcRest.Models;
-public class User : IdentityUser<int> {
+public class User : IdentityUser {
 	[Required]
 	[EmailAddress]
 	public string Email { get; set; }
