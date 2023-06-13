@@ -38,9 +38,9 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 	}
 	
 
-	public async Task<bool> ValidateUserAsync(UserLoginDTO loginDto) {
-		_user = await _userManager.FindByEmailAsync(loginDto.Email);
-		var result = _user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password);
+	public async Task<bool> ValidateUserAsync(UserLoginDTO userLogin) {
+		_user = await _userManager.FindByEmailAsync(userLogin.Email);
+		var result = _user != null && await _userManager.CheckPasswordAsync(_user, userLogin.Password);
 		return result;
 	}
 
