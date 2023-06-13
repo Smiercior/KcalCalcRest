@@ -10,6 +10,7 @@ using KcalCalcRest.Models;
 using KcalCalcRest.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgresSQL");
@@ -19,7 +20,38 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+	c.SwaggerDoc("v1", new OpenApiInfo {
+		Title = "KcalApp API",
+		Version = "v1",
+		Description = "KcalApp API Services.",
+		Contact = new OpenApiContact {
+			Name = "KcalTeam"
+		}
+	});
+	c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+		Name = "Authorization",
+		Type = SecuritySchemeType.ApiKey,
+		Scheme = "Bearer",
+		BearerFormat = "JWT",
+		In = ParameterLocation.Header,
+		Description = "JWT Authorization header using the Bearer scheme."
+	});
+            
+	c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+		{
+			new OpenApiSecurityScheme {
+				Reference = new OpenApiReference {
+					Type = ReferenceType.SecurityScheme,
+					Id = "Bearer"
+				}
+			},
+			Array.Empty<string>()
+		}
+	});
+});
 
 // Add Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
