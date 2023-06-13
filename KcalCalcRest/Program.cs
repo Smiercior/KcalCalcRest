@@ -93,6 +93,7 @@ builder.Services.AddIdentity<User, IdentityRole>(o => {
 builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 var mapperConfig = new MapperConfiguration(map => {
 	map.AddProfile<UserMappingProfile>();
+	map.AddProfile<ProductMappingProfile>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper()); 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();

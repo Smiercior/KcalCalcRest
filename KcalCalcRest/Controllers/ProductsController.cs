@@ -2,7 +2,6 @@
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest.Controllers; 
@@ -24,7 +23,6 @@ public class ProductsController : BaseApiController {
 			},
 			productDataToReturn);
 	}
-
 
 	[HttpGet("{productId}", Name = "ProductById")]
 	public async Task<IActionResult> GetProduct(int productId)
