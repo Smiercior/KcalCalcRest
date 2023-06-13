@@ -1,8 +1,8 @@
-﻿using KcalCalcRest.Models;
+﻿using KcalCalcRest.DTOs;
 using Microsoft.AspNetCore.Identity;
 
 namespace KcalCalcRest.Interfaces; 
 
 public interface IUserAuthenticationRepository {
-	Task<IdentityResult> RegisterUserAsync(User user);
+	Task<IdentityResult> RegisterUserAsync(UserRegistrationDTO userRegistration);
 }
