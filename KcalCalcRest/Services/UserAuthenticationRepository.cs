@@ -51,6 +51,16 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 		return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 	}
 
+	public Task<User> GetUserAsync(string email) {
+		
+		var user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+		return _userManager.GetUserAsync(HttpContext.)
+	}
+
+	public Task<User> GetCurrentUserAsync() {
+		throw new NotImplementedException();
+	}
+
 	private SigningCredentials GetSigningCredentials() {
 		var jwtConfig = _configuration.GetSection("JwtConfig");
 		var key = Encoding.UTF8.GetBytes(jwtConfig["secret"]);

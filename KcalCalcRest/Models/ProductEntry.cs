@@ -11,7 +11,7 @@ public class ProductEntry {
 	[Range(0, 1000)]
 	public float Amount { get; set; }
 
-	[DataType(DataType.Date)]
+	[DataType(DataType.DateTime)]
 	[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
 	public DateTime EntryDate { get; set; }
 
