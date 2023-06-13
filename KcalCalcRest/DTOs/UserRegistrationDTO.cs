@@ -10,6 +10,6 @@ public class UserRegistrationDTO {
 	[Required]
 	public string? Password2 { get; init; } // TODO: use this
 	
-	public string? Weight { get; init; }
-	public string? Height { get; init; }
+	public float? Weight { get; init; }
+	public float? Height { get; init; }
 }
