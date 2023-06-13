@@ -16,7 +16,7 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 	private readonly IMapper _mapper;
 	private User? _user;
 	
-	public UserAuthenticationRepository(UserManager<User> userManager,  IConfiguration configuration, IMapper mapper) {
+	public UserAuthenticationRepository(UserManager<User> userManager, IConfiguration configuration, IMapper mapper) {
 		_userManager = userManager;
 		_mapper = mapper;
 	}

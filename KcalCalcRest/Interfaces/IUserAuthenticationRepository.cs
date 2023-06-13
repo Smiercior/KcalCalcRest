@@ -6,5 +6,5 @@ namespace KcalCalcRest.Interfaces;
 public interface IUserAuthenticationRepository {
 	Task<IdentityResult> RegisterUserAsync(UserRegistrationDTO userRegistration);
 	Task<bool> ValidateUserAsync(UserLoginDTO userLogin);
-	Task<string> CreateTokenAsync(UserLoginDTO userLogin);
+	Task<string> CreateTokenAsync();
 }
