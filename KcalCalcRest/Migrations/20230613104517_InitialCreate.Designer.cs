@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KcalCalcRest.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230613092658_IdentityMigration")]
-    partial class IdentityMigration
+    [Migration("20230613104517_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
