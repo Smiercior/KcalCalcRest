@@ -8,4 +8,9 @@ public class UserProfileDTO {
 	
 	public float? Weight { get; init; }
 	public float? Height { get; init; }
+	
+	public float? KcalLimit { get; init; }
+	public float? ProteinLimit { get; init; }
+	public float? CarbohydrateLimit { get; init; }
+	public float? FatLimit { get; init; }
 }
