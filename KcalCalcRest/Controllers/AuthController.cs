@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
+using KcalCalcRest.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest.Controllers; 
@@ -9,7 +11,10 @@ namespace KcalCalcRest.Controllers;
 [Route("api/auth")]
 [ApiController]
 public class AuthController : BaseApiController {
-	public AuthController(IRepositoryManager repository, IMapper mapper) : base(repository, mapper) { }
+	private SignInManager<User> _signInManager;
+	public AuthController(SignInManager<User> signInManager, IRepositoryManager repository, IMapper mapper) : base(repository, mapper) {
+		_signInManager = signInManager;
+	}
 	
 	[AllowAnonymous]
 	[HttpPost("register")]
@@ -21,10 +26,15 @@ public class AuthController : BaseApiController {
 	[AllowAnonymous]
 	[HttpPost("login")]
 	public async Task<IActionResult> Authenticate([FromBody] UserLoginDTO userLogin) {
-		var validated = await _repository.UserAuthentication.ValidateUserAsync(userLogin);
-		if (!validated) {
-			return Unauthorized();
+		if (!ModelState.IsValid) {
+			return BadRequest(ModelState);
 		}
-		return Ok(new { Token = await _repository.UserAuthentication.CreateTokenAsync() });
+		
+		var result = await _signInManager.PasswordSignInAsync(userLogin.Email!, userLogin.Password!, isPersistent: false, lockoutOnFailure: true);
+		if (result.Succeeded) {
+			return Ok(new { Token = await _repository.UserAuthentication.CreateTokenAsync() });
+		}
+
+		return Unauthorized(result.IsLockedOut ? "The account is locked out." : "Invalid login attempt.");
 	}
 }
