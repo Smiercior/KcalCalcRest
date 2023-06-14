@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("PostgresSQL");
+var connectionString = builder.Configuration.GetConnectionString("PostgresSQL"); // TODO: protect DB credentials
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; // TODO: rename this
 builder.Services.AddCors(options =>
