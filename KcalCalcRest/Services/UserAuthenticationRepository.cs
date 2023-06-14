@@ -34,13 +34,13 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 		var user = _mapper.Map<User>(userRegistration);
 		user.JoinedAt = DateTime.UtcNow;
 
-		var result = await _userManager.CreateAsync(user, userRegistration.Password);
+		var result = await _userManager.CreateAsync(user, userRegistration.Password!);
 		return result;
 	}
 
 	public async Task<bool> ValidateUserAsync(UserLoginDTO userLogin) {
-		_user = await _userManager.FindByEmailAsync(userLogin.Email);
-		var result = _user != null && await _userManager.CheckPasswordAsync(_user, userLogin.Password);
+		_user = await _userManager.FindByEmailAsync(userLogin.Email!);
+		var result = _user != null && await _userManager.CheckPasswordAsync(_user, userLogin.Password!);
 		return result;
 	}
 
@@ -63,13 +63,15 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 	}
 
 	private async Task<List<Claim>> GetClaims() {
+		if (_user?.UserName is null) {
+			return new List<Claim>();
+		}
+		
 		var claims = new List<Claim> {
 			new Claim(ClaimTypes.Name, _user.UserName)
 		};
 		var roles = await _userManager.GetRolesAsync(_user);
-		foreach (var role in roles) {
-			claims.Add(new Claim(ClaimTypes.Role, role));
-		}
+		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 		return claims;
 	}
 
