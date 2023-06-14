@@ -17,7 +17,6 @@ public class ProfileController : BaseApiController {
 		_contextAccessor = contextAccessor;
 	}
 	
-	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet]
 	public async Task<IActionResult> GetProfile() {
 		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);

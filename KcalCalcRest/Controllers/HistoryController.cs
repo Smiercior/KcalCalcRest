@@ -15,7 +15,6 @@ public class HistoryController : BaseApiController {
 		_contextAccessor = contextAccessor;
 	}
 	
-	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet("history-per-day")]
 	public async Task<IActionResult> GetEntriesPerDay() {
 		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);

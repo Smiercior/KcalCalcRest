@@ -18,7 +18,6 @@ public class ProductsEntriesController : BaseApiController {
 		_contextAccessor = contextAccessor;
 	}
 
-	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpPost]
 	public async Task<IActionResult> CreateProductEntry([FromBody] ProductEntryCreationDTO productEntryData) {
 		var productEntry = _mapper.Map<ProductEntry>(productEntryData);
@@ -42,7 +41,6 @@ public class ProductsEntriesController : BaseApiController {
 			productEntryDataToReturn);
 	}
 
-	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet("{productEntryId:int}", Name = "ProductEntryById")]
 	public async Task<IActionResult> GetProductEntry(int productEntryId) {
 		var productEntry = await _repository.ProductEntries.GetProductEntry(productEntryId);
@@ -54,7 +52,6 @@ public class ProductsEntriesController : BaseApiController {
 		return Ok(productEntryDTO);
 	}
 	
-	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpDelete("{productEntryId:int}")]
 	public async Task<IActionResult> DeleteProductEntry(int productEntryId) {
 		var productEntry = await _repository.ProductEntries.GetProductEntry(productEntryId);
@@ -67,7 +64,6 @@ public class ProductsEntriesController : BaseApiController {
 		return NoContent();
 	}
 
-	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet("today")]
 	public async Task<IActionResult> GetUserEntriesFromToday() {
 		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
