@@ -2,7 +2,6 @@
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest.Controllers; 
@@ -30,7 +29,6 @@ public class ProductsController : BaseApiController {
 	{
 		var product = await _repository.Products.GetProduct(productId, trackChanges: false);
 		if (product is null) {
-			// TODO: _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
 			return NotFound();
 		}
 
@@ -45,8 +43,7 @@ public class ProductsController : BaseApiController {
 			var productsDTO = _mapper.Map<IEnumerable<ProductDTO>>(products);
 			return Ok(productsDTO);
 		}
-		catch (Exception e) {
-			// TODO: _logger.LogError($"Something went wrong in the {nameof(GetProducts)} action {e}");
+		catch (Exception) {
 			return StatusCode(500, "Internal server error");
 		}
 	}

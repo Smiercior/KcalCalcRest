@@ -96,7 +96,13 @@ builder.Services.AddIdentity<User, IdentityRole>(o => {
 		o.Password.RequireLowercase = true;
 		o.Password.RequireUppercase = true;
 		o.Password.RequireNonAlphanumeric = true;
+		o.Password.RequiredLength = 12;
+		
 		o.User.RequireUniqueEmail = true;
+		
+		o.Lockout.AllowedForNewUsers = true;
+		o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+		o.Lockout.MaxFailedAccessAttempts = 3;
 	})
 	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddDefaultTokenProviders();
