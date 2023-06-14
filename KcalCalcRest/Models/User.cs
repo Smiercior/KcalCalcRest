@@ -17,11 +17,11 @@ public class User : IdentityUser {
 	
 	public float? Weight { get; set; }
 	public float? Height { get; set; }
-	
-	public float? KcalLimit { get; set; }
-	public float? ProteinLimit { get; set; }
-	public float? CarbohydrateLimit { get; set; }
-	public float? FatLimit { get; set; }
+
+	public float? KcalLimit { get; set; } = 2500;
+	public float? ProteinLimit { get; set; } = 56;
+	public float? CarbohydrateLimit { get; set; } = 325;
+	public float? FatLimit { get; set; } = 78;
 
 	public virtual ICollection<ProductEntry> ProductEntries { get; set; }
 }
