@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers;
 
+[Authorize(AuthenticationSchemes = "Bearer")]
 [Route("api/product-entries/")]
 [ApiController]
 public class ProductsEntriesController : BaseApiController {
@@ -63,10 +64,10 @@ public class ProductsEntriesController : BaseApiController {
 		await _repository.SaveAsync();
 		return NoContent();
 	}
-
+	
 	[HttpGet("today")]
 	public async Task<IActionResult> GetUserEntriesFromToday() {
-		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
+		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
 		if (username is null) {
 			return BadRequest("Couldn't get username from context.");
 		}

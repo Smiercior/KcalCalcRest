@@ -17,12 +17,12 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgresSQL"); // TODO: protect DB credentials
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; // TODO: rename this
+var corsPolicyAllowSpecificOrigins = "_allowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy(MyAllowSpecificOrigins,
+	options.AddPolicy(corsPolicyAllowSpecificOrigins,
 		policy => {
-			policy.AllowAnyOrigin() // TODO: allow only specific origins
+			policy.WithOrigins("http://localhost:7060", "http://localhost:3000")
 				.AllowAnyHeader()
 				.AllowAnyMethod();
 		});
@@ -30,12 +30,9 @@ builder.Services.AddCors(options =>
 
 
 // Add services to the container.
-builder.Services.AddControllers(opt => {
-	var policy = new AuthorizationPolicyBuilder("Bearer").RequireAuthenticatedUser().Build();
-	opt.Filters.Add(new AuthorizeFilter(policy));
-});
+builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// More about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -77,7 +74,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add JWT token authentication
 var jwtConfig = builder.Configuration.GetSection("JwtConfig");
 var secretKey = jwtConfig["secret"];
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(opt => {
+		opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	})
 	.AddJwtBearer(options => {
 		options.TokenValidationParameters = new TokenValidationParameters {
 			ValidateIssuer = true,
@@ -137,9 +137,7 @@ if (app.Environment.IsDevelopment()) {
 	app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();  // TODO: reenable or remove this
-
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(corsPolicyAllowSpecificOrigins);
 
 app.UseAuthorization();
 app.UseAuthentication();

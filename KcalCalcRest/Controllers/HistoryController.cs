@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers; 
 
+[Authorize(AuthenticationSchemes = "Bearer")]
 [Route("api/")]
 [ApiController]
 public class HistoryController : BaseApiController {

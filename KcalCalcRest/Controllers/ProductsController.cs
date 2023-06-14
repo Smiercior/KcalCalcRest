@@ -2,10 +2,12 @@
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KcalCalcRest.Controllers; 
 
+[Authorize(AuthenticationSchemes = "Bearer")]
 [Route("api/products/")]
 [ApiController]
 public class ProductsController : BaseApiController {

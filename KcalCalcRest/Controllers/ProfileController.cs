@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers; 
 
+[Authorize(AuthenticationSchemes = "Bearer")]
 [Route("api/profile")]
 [ApiController]
 public class ProfileController : BaseApiController {
