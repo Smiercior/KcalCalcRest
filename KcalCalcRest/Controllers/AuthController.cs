@@ -11,7 +11,7 @@ namespace KcalCalcRest.Controllers;
 [Route("api/auth")]
 [ApiController]
 public class AuthController : BaseApiController {
-	private SignInManager<User> _signInManager;
+	private readonly SignInManager<User> _signInManager;
 	public AuthController(SignInManager<User> signInManager, IRepositoryManager repository, IMapper mapper) : base(repository, mapper) {
 		_signInManager = signInManager;
 	}
