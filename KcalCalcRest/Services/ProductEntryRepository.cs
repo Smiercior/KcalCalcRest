@@ -8,8 +8,8 @@ namespace KcalCalcRest.Services;
 public class ProductEntryRepository : RepositoryBase<ProductEntry>, IProductEntryRepository {
 	public ProductEntryRepository(ApplicationDbContext appDbContext) : base(appDbContext) { }
 
-	public async Task<IEnumerable<ProductEntry>> GetAllUserEntriesToday(string userId) => 
-		await FindByConditionAsync(e => e.UserId == userId && e.EntryDate.Date == DateTime.Today, false).Result.ToListAsync();
+	public async Task<IQueryable<ProductEntry>> GetAllUserEntriesToday(string userId) => 
+		await FindByConditionAsync(e => e.UserId == userId && e.EntryDate.Date == DateTime.UtcNow.Date, false);
 
 	public async Task CreateProductEntry(ProductEntry productEntry, string userId) {
 		productEntry.UserId = userId;
@@ -25,8 +25,8 @@ public class ProductEntryRepository : RepositoryBase<ProductEntry>, IProductEntr
 		await RemoveAsync(productEntry);
 	}
 
-	public async Task<List<IGrouping<DateTime, ProductEntry>>> GetEntriesGroupedByDate(string userId) {
-		return await FindByConditionAsync(e => e.UserId == userId, false).Result.GroupBy(e => e.EntryDate.Date)
-			.ToListAsync();
+	public async Task<IQueryable<IGrouping<DateTime, ProductEntry>>> GetEntriesGroupedByDate(string userId) {
+		var entries = await FindByConditionAsync(e => e.UserId == userId, false);
+		return entries.GroupBy(e => e.EntryDate.Date);
 	}
 }

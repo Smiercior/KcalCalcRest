@@ -4,20 +4,18 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using KcalCalcRest.Data;
+using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
-using KcalCalcRest.Mappings;
 using KcalCalcRest.Models;
 using KcalCalcRest.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgresSQL");
 
-var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; // TODO: rename this
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(MyAllowSpecificOrigins,
@@ -104,10 +102,22 @@ builder.Services.AddIdentity<User, IdentityRole>(o => {
 		
 // Add services.
 builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-var mapperConfig = new MapperConfiguration(map => {
-	map.AddProfile<UserMappingProfile>();
-	map.AddProfile<ProductMappingProfile>();
-	map.AddProfile<ProductEntryMappingProfile>();
+var mapperConfig = new MapperConfiguration(cfg => {
+	cfg.CreateMap<UserRegistrationDTO, User>()
+		.ForMember(u => u.UserName, opt => opt.MapFrom(ur => ur.Email));
+	cfg.CreateMap<User, UserProfileDTO>();
+
+	cfg.CreateMap<Product, ProductDTO>();
+	cfg.CreateMap<ProductCreationAndUpdateDTO, Product>();
+	
+	cfg.CreateMap<ProductEntryCreationDTO, ProductEntry>();
+	cfg.CreateMap<ProductEntry, ProductEntryDTO>()
+		.ForMember(dto => dto.Name, opt => opt.MapFrom(pe => pe.Product.Name))
+		.ForMember(dto => dto.Brand, opt => opt.MapFrom(pe => pe.Product.Brand))
+		.ForMember(dto => dto.Kcal, opt => opt.MapFrom(pe => pe.Product.Kcal))
+		.ForMember(dto => dto.Protein, opt => opt.MapFrom(pe => pe.Product.Protein))
+		.ForMember(dto => dto.Carbohydrate, opt => opt.MapFrom(pe => pe.Product.Carbohydrate))
+		.ForMember(dto => dto.Fat, opt => opt.MapFrom(pe => pe.Product.Fat));
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper()); 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
@@ -120,7 +130,7 @@ if (app.Environment.IsDevelopment()) {
 	app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();  // TODO: reenable or remove this
 
 app.UseCors(MyAllowSpecificOrigins);
 

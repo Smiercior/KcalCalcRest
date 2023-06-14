@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
@@ -8,7 +9,7 @@ using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers;
 
-[Route("api/products-entries/")]
+[Route("api/product-entries/")]
 [ApiController]
 public class ProductsEntriesController : BaseApiController {
 	private IHttpContextAccessor _contextAccessor;
@@ -48,7 +49,7 @@ public class ProductsEntriesController : BaseApiController {
 		if (productEntry is null) {
 			return NotFound();
 		}
-
+	
 		var productEntryDTO = _mapper.Map<ProductEntryDTO>(productEntry);
 		return Ok(productEntryDTO);
 	}
@@ -78,8 +79,7 @@ public class ProductsEntriesController : BaseApiController {
 			return BadRequest("User not found.");
 		}
 		
-		var productEntries = await _repository.ProductEntries.GetAllUserEntriesToday(user.Id);
-		var productEntriesDTO = _mapper.Map<IEnumerable<ProductEntryDTO>>(productEntries);
+		var productEntriesDTO = (await _repository.ProductEntries.GetAllUserEntriesToday(user.Id)).ProjectTo<ProductEntryDTO>(_mapper.ConfigurationProvider).ToList();
 		return Ok(productEntriesDTO);
 	}
 }
