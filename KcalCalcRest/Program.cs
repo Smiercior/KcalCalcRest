@@ -8,16 +8,14 @@ using KcalCalcRest.DTOs;
 using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
 using KcalCalcRest.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("PostgresSQL"); // TODO: protect DB credentials
+var connectionString = builder.Configuration["Db:ConnectionString"];
 
-var corsPolicyAllowSpecificOrigins = "_allowSpecificOrigins";
+const string corsPolicyAllowSpecificOrigins = "_allowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(corsPolicyAllowSpecificOrigins,
