@@ -2,7 +2,6 @@
 using KcalCalcRest.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers; 
 
@@ -29,7 +28,6 @@ public class HistoryController : BaseApiController {
 		});
 		return Ok(toReturn);
 	}
-	
 
 	[HttpGet("daily-summary")]
 	public async Task<IActionResult> GetDailySummary() {
