@@ -15,7 +15,7 @@ public class ProfileController : BaseApiController {
 	[Authorize(AuthenticationSchemes = "Bearer")]
 	[HttpGet]
 	public async Task<IActionResult> GetProfile() {
-		var user = GetCurrentUser();
+		var user = await GetCurrentUser();
 		if (user is null) {
 			return BadRequest($"User not found.");
 		}
