@@ -14,7 +14,6 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 	private readonly UserManager<User> _userManager;
 	private readonly IConfiguration _configuration;
 	private readonly IMapper _mapper;
-	private User? _user;
 	
 	public UserAuthenticationRepository(UserManager<User> userManager, IConfiguration configuration, IMapper mapper) {
 		_userManager = userManager;
@@ -38,17 +37,33 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 		return result;
 	}
 
-	public async Task<bool> ValidateUserAsync(UserLoginDTO userLogin) {
-		_user = await _userManager.FindByEmailAsync(userLogin.Email!);
-		var result = _user != null && await _userManager.CheckPasswordAsync(_user, userLogin.Password!);
+	private async Task<bool> ValidateUserAsync(UserLoginDTO userLogin) { // TODO: remove this
+		var user = await _userManager.FindByEmailAsync(userLogin.Email!);
+		if (user == null) {
+			
+		}
+		var result = user != null && await _userManager.CheckPasswordAsync(user, userLogin.Password!);
 		return result;
 	}
 
-	public async Task<string> CreateTokenAsync() {
+	public async Task<string?> CreateTokenAsync(string email) {
+		var user = await _userManager.FindByEmailAsync(email);
+		if (user is null) {
+			return null;
+		}
+		
 		var signingCredentials = GetSigningCredentials();
-		var claims = await GetClaims();
-		var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-		return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+		var claims = await GetClaims(user);
+		
+		var jwtSettings = _configuration.GetSection("JwtConfig");
+		var securityToken = new JwtSecurityToken(
+			issuer: jwtSettings["validIssuer"],
+			audience: jwtSettings["validAudience"],
+			claims: claims,
+			expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expirationInMinutes"])),
+			signingCredentials: signingCredentials
+		);
+		return new JwtSecurityTokenHandler().WriteToken(securityToken);
 	}
 
 	public Task<User?> GetUserAsync(string email) {
@@ -62,29 +77,16 @@ internal sealed class UserAuthenticationRepository : IUserAuthenticationReposito
 		return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
 	}
 
-	private async Task<List<Claim>> GetClaims() {
-		if (_user?.UserName is null) {
-			return new List<Claim>();
+	private async Task<List<Claim>> GetClaims(User user) {
+		var claims = new List<Claim>();
+		if (user.UserName is not null) {
+			claims.Add(new Claim(ClaimTypes.Name, user.UserName));
 		}
-		
-		var claims = new List<Claim> {
-			new Claim(ClaimTypes.Name, _user.UserName)
-		};
-		var roles = await _userManager.GetRolesAsync(_user);
+		if (user.Email is not null) {
+			claims.Add(new Claim(ClaimTypes.Email, user.Email));
+		}
+		var roles = await _userManager.GetRolesAsync(user);
 		claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 		return claims;
-	}
-
-	private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims) {
-		var jwtSettings = _configuration.GetSection("JwtConfig");
-		var tokenOptions = new JwtSecurityToken
-		(
-			issuer: jwtSettings["validIssuer"],
-			audience: jwtSettings["validAudience"],
-			claims: claims,
-			expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expirationInMinutes"])),
-			signingCredentials: signingCredentials
-		);
-		return tokenOptions;
 	}
 }

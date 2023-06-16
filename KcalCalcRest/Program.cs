@@ -16,8 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["Db:ConnectionString"];
 
 const string corsPolicyAllowSpecificOrigins = "_allowSpecificOrigins";
-builder.Services.AddCors(options =>
-{
+builder.Services.AddCors(options => {
 	options.AddPolicy(corsPolicyAllowSpecificOrigins,
 		policy => {
 			policy.WithOrigins("http://localhost:7060", "http://localhost:3000")
@@ -32,8 +31,7 @@ builder.Services.AddControllers();
 
 // More about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
+builder.Services.AddSwaggerGen(c => {
 	c.SwaggerDoc("v1", new OpenApiInfo {
 		Title = "KcalApp API",
 		Version = "v1",

@@ -5,7 +5,6 @@ using KcalCalcRest.Interfaces;
 using KcalCalcRest.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace KcalCalcRest.Controllers;
 
@@ -13,21 +12,13 @@ namespace KcalCalcRest.Controllers;
 [Route("api/product-entries/")]
 [ApiController]
 public class ProductsEntriesController : BaseApiController {
-	private IHttpContextAccessor _contextAccessor;
-	
-	public ProductsEntriesController(IRepositoryManager repository, IMapper mapper, IHttpContextAccessor contextAccessor) : base(repository, mapper) {
-		_contextAccessor = contextAccessor;
-	}
+	public ProductsEntriesController(IRepositoryManager repository, IMapper mapper) : base(repository, mapper) { }
 
 	[HttpPost]
 	public async Task<IActionResult> CreateProductEntry([FromBody] ProductEntryCreationDTO productEntryData) {
 		var productEntry = _mapper.Map<ProductEntry>(productEntryData);
 		
-		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
-		if (username is null) {
-			return BadRequest("Couldn't get username from context.");
-		}
-		var user = await _repository.UserAuthentication.GetUserAsync(username);
+		var user = await GetCurrentUser();
 		if (user is null) {
 			return BadRequest("User not found.");
 		}
@@ -67,16 +58,14 @@ public class ProductsEntriesController : BaseApiController {
 	
 	[HttpGet("today")]
 	public async Task<IActionResult> GetUserEntriesFromToday() {
-		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
-		if (username is null) {
-			return BadRequest("Couldn't get username from context.");
-		}
-		var user = await _repository.UserAuthentication.GetUserAsync(username);
+		var user = await GetCurrentUser();
 		if (user is null) {
 			return BadRequest("User not found.");
 		}
 		
-		var productEntriesDTO = (await _repository.ProductEntries.GetAllUserEntriesToday(user.Id)).ProjectTo<ProductEntryDTO>(_mapper.ConfigurationProvider).ToList();
+		var productEntriesDTO = (await _repository.ProductEntries.GetAllUserEntriesToday(user.Id))
+			.ProjectTo<ProductEntryDTO>(_mapper.ConfigurationProvider)
+			.ToList();
 		return Ok(productEntriesDTO);
 	}
 }

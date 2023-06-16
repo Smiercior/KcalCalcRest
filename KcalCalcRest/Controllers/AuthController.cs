@@ -32,7 +32,7 @@ public class AuthController : BaseApiController {
 		
 		var result = await _signInManager.PasswordSignInAsync(userLogin.Email!, userLogin.Password!, isPersistent: false, lockoutOnFailure: true);
 		if (result.Succeeded) {
-			return Ok(new { Token = await _repository.UserAuthentication.CreateTokenAsync() });
+			return Ok(new { Token = await _repository.UserAuthentication.CreateTokenAsync(userLogin.Email!) });
 		}
 
 		return Unauthorized(result.IsLockedOut ? "The account is locked out." : "Invalid login attempt.");

@@ -10,19 +10,11 @@ namespace KcalCalcRest.Controllers;
 [Route("api/")]
 [ApiController]
 public class HistoryController : BaseApiController {
-	private readonly IHttpContextAccessor _contextAccessor;
-
-	public HistoryController(IRepositoryManager repository, IMapper mapper, IHttpContextAccessor contextAccessor) : base(repository, mapper) {
-		_contextAccessor = contextAccessor;
-	}
+	public HistoryController(IRepositoryManager repository, IMapper mapper) : base(repository, mapper) { }
 	
 	[HttpGet("history-per-day")]
 	public async Task<IActionResult> GetEntriesPerDay() {
-		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
-		if (username is null) {
-			return BadRequest("Couldn't get username from context.");
-		}
-		var user = await _repository.UserAuthentication.GetUserAsync(username);
+		var user = await GetCurrentUser();
 		if (user is null) {
 			return BadRequest("User not found.");
 		}
@@ -41,11 +33,7 @@ public class HistoryController : BaseApiController {
 
 	[HttpGet("daily-summary")]
 	public async Task<IActionResult> GetDailySummary() {
-		var username = _contextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
-		if (username is null) {
-			return BadRequest("Couldn't get username from context.");
-		}
-		var user = await _repository.UserAuthentication.GetUserAsync(username);
+		var user = await GetCurrentUser();
 		if (user is null) {
 			return BadRequest("User not found.");
 		}
